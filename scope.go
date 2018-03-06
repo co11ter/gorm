@@ -1307,7 +1307,13 @@ func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (r
 					if hasValue || !isBlank(field) {
 						hasValue = true
 					}
-					result = append(result, field.Interface())
+					if field.Kind() == reflect.Slice {
+						for i := 0; i < field.Len(); i++ {
+							result = append(result, indirect(field.Index(i)).Interface())
+						}
+					} else {
+						result = append(result, field.Interface())
+					}
 				}
 
 				if hasValue {
@@ -1322,7 +1328,13 @@ func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (r
 				if hasValue || !isBlank(field) {
 					hasValue = true
 				}
-				result = append(result, field.Interface())
+				if field.Kind() == reflect.Slice {
+					for i := 0; i < field.Len(); i++ {
+						result = append(result, indirect(field.Index(i)).Interface())
+					}
+				} else {
+					result = append(result, field.Interface())
+				}
 			}
 
 			if hasValue {
